@@ -1,4 +1,6 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import multer from 'multer';
 import { IncidenciasService } from './incidencias.service';
 
 @Controller('incidencias')
@@ -11,8 +13,13 @@ export class IncidenciasController {
         return this.incidenciasService.getIncidencia();
     }
 
-    @Post()
-    setHello(): string {
-        return this.incidenciasService.setIncidencia();
+    @Post('upload')
+    @UseInterceptors(FilesInterceptor('files', 3, {
+        dest: './uploads'
+    }))
+    uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
+        console.log(files);
+
     }
+
 }
